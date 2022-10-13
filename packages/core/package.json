@@ -22,10 +22,12 @@
     "registry": "https://registry.yarnpkg.com"
   },
   "scripts": {
-    "clean": "rm -rf dist",
     "build": "swc src -d dist",
+    "clean": "rm -rf dist",
+    "dev": "yarn watch:build",
     "precommit": "yarn test",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "watch:build": "swc src -w --out-dir dist"
   },
   "devDependencies": {
     "@types/jest": "^29.1.2",
@@ -34,8 +36,13 @@
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
-    "@types/lodash": "^4.14.186",
-    "axios": "^1.1.2",
-    "lodash": "^4.17.21"
+    "axios": "^1.1.2"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ]
   }
 }

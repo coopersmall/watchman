@@ -1,9 +1,9 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 
-const DEFAULT_TIMEOUT_MS = 15000;
+export const DEFAULT_TIMEOUT_MS = 15000;
 
-export class RestClient {
-  protected readonly instance: AxiosInstance;
+export class HttpClient {
+  readonly instance: AxiosInstance;
 
   constructor(timeout: number = DEFAULT_TIMEOUT_MS) {
     this.instance = axios.create({ timeout });
@@ -38,8 +38,8 @@ export class RestClient {
   };
 }
 
-const createRestClient = (timeout: number = DEFAULT_TIMEOUT_MS) => {
-  return new RestClient(timeout);
+const createHttpClient = (timeout: number = DEFAULT_TIMEOUT_MS) => {
+  return new HttpClient(timeout);
 };
 
-export default createRestClient;
+export default createHttpClient;
