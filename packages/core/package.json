@@ -1,0 +1,41 @@
+{
+  "name": "@watchman/core",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coopersmall/watchman.git",
+    "directory": "packages/core"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "engines": {
+    "node": "^16.0.0"
+  },
+  "engineStrict": true,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.yarnpkg.com"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "swc src -d dist",
+    "precommit": "yarn test",
+    "test": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.1.2",
+    "jest": "^29.1.2",
+    "nock": "^13.2.9"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/lodash": "^4.14.186",
+    "axios": "^1.1.2",
+    "lodash": "^4.17.21"
+  }
+}
