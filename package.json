@@ -4,10 +4,10 @@
   "license": "ISC",
   "scripts": {
     "build": "pnpm -r --stream build",
-    "build-core": "pnpm --filter core --stream build",
     "clean": "pnpm -r clean",
     "commit": "git-cz",
     "commit-all": "git add . && pnpm commit",
+    "core-build": "pnpm --filter core --stream build",
     "dev": "pnpm run dev -r",
     "format": "prettier **/*.{ts,js,json,yaml,md} -l",
     "format-fix": "prettier **/*.{ts,js,json,yaml,md} --write",
