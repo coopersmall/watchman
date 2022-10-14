@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "swc src -d dist",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist rm -rf coverage",
     "dev": "pnpm watch:build",
     "precommit": "pnpm test",
     "test": "jest --coverage",
