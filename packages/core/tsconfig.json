@@ -1,11 +1,8 @@
 {
-    "extends": "./tsconfig.build.json",
-    "compilerOptions": {
-        "baseUrl": ".",
-    },
-    "exclude": [],
-    "include": [
-        "src",
-        "test"
-    ]
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "exclude": [],
+  "include": ["src", "test"]
 }

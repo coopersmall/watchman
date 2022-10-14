@@ -24,8 +24,8 @@
   "scripts": {
     "build": "swc src -d dist",
     "clean": "rm -rf dist",
-    "dev": "yarn watch:build",
-    "precommit": "yarn test",
+    "dev": "pnpm watch:build",
+    "precommit": "pnpm test",
     "test": "jest --coverage",
     "watch:build": "swc src -w --out-dir dist"
   },
@@ -35,7 +35,6 @@
     "nock": "^13.2.9"
   },
   "dependencies": {
-    "@types/axios": "^0.14.0",
     "axios": "^1.1.2"
   },
   "jest": {
