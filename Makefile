@@ -18,6 +18,7 @@ commit-all:
 
 deps:
 	@echo "$(HEADER) Installing all dependencies" && \
+	. ./scripts/setup.sh && \
 	$(PACKAGE_MANAGER) setup
 
 format:
