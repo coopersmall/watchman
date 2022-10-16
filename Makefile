@@ -1,10 +1,22 @@
-NAME=$(shell node -p "require('./package.json').name")
-VERSION=$(shell node -p "require('./package.json').version")
-HEADER=[$(NAME): v$(VERSION)]
+NAME = $(shell node -p "require('./package.json').name")
+VERSION = $(shell node -p "require('./package.json').version")
+HEADER = [$(NAME): v$(VERSION)]
 
-PACKAGE_MANAGER=pnpm
+PACKAGE_MANAGER = pnpm
 
-GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+# Utilities
+MAKEFILE_PATH = $(strip $(MAKEFILE_LIST))
+MAKEFILE_DIR = $(shell dirname "$(MAKEFILE_PATH)")
+
+# Git Operations
+GIT_ADD_ALL = git add .
+GIT_ADD_CHANGESET = git add -A -- ./.changeset
+GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
+GIT_PUSH_TO_BRANCH = git push origin $(GIT_BRANCH)
+
+# Run Scripts from ./scripts
+RUN_SETUP = . $(MAKEFILE_DIR)/scripts/setup.sh
+RUN_VERSION = . $(MAKEFILE_DIR)/scripts/version.sh
 
 build:
 	@echo "$(HEADER) Building all packages" && \
@@ -16,19 +28,20 @@ clean:
 
 commit:
 	@echo "${HEADER} Creating commit for ${GIT_BRANCH}" && \
-	. ./scripts/version.sh && \
-	git add -A -- ./.changeset && \
+	$(RUN_VERSION) && \
+	$(GIT_ADD_CHANGESET) && \
 	$(PACKAGE_MANAGER) commit
 
 commit-all:
 	@echo "${HEADER} Creating commit for all changed files on ${GIT_BRANCH}" && \
-	. ./scripts/version.sh && \
-	git add . && \
+	$(GIT_ADD_ALL) \
+	$(RUN_VERSION) && \
+	$(GIT_ADD_CHANGESET) && \
 	$(PACKAGE_MANAGER) commit
 
 deps:
 	@echo "$(HEADER) Installing all dependencies" && \
-	. ./scripts/setup.sh && \
+	$(RUN_SETUP) && \
 	$(PACKAGE_MANAGER) setup
 
 format:
@@ -49,10 +62,11 @@ lint-fix:
 
 push-all:
 	@echo "${HEADER} Pushing all changed files to ${GIT_BRANCH}" && \
-	. ./scripts/version.sh && \
-	git add . && \
+	$(GIT_ADD_ALL) && \
+	$(RUN_VERSION) && \
+	$(GIT_ADD_CHANGESET) && \
 	$(PACKAGE_MANAGER) commit && \
-	git push origin $(GIT_BRANCH)
+	$(GIT_PUSH_TO_BRANCH)
 
 start:
 	@echo "$(HEADER) Starting all packages" && \
