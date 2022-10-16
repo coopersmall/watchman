@@ -42,6 +42,9 @@
     "testEnvironment": "node",
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/setup_after_env.ts"
     ]
   }
 }

@@ -1,6 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
-
-export const DEFAULT_TIMEOUT_MS = 15000;
+import { DEFAULT_TIMEOUT_MS } from './constants';
 
 export class HttpClient {
   readonly instance: AxiosInstance;
