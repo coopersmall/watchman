@@ -22,7 +22,6 @@ commit:
 commit-all:
 	@echo "${HEADER} Creating commit for all changed files on ${GIT_BRANCH}" && \
 	. ./scripts/version.sh && \
-	git add . && \
 	$(PACKAGE_MANAGER) commit
 
 deps:
@@ -48,8 +47,8 @@ lint-fix:
 
 push-all:
 	@echo "${HEADER} Pushing all changed files to ${GIT_BRANCH}" && \
-	$(call should_update_version) && \
 	git add . && \
+	. ./scripts/version.sh && \
 	$(PACKAGE_MANAGER) commit && \
 	git push origin $(GIT_BRANCH)
 
