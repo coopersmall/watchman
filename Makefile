@@ -16,14 +16,14 @@ clean:
 
 commit:
 	@echo "${HEADER} Creating commit for ${GIT_BRANCH}" && \
-	git-cz && \
-	$(PACKAGE_MANAGER) changeset
+	. ./scripts/version.sh && \
+	$(PACKAGE_MANAGER) commit
 
 commit-all:
 	@echo "${HEADER} Creating commit for all changed files on ${GIT_BRANCH}" && \
+	. ./scripts/version.sh && \
 	git add . && \
-	$(PACKAGE_MANAGER) commit && \
-	$(PACKAGE_MANAGER) changeset
+	$(PACKAGE_MANAGER) commit
 
 deps:
 	@echo "$(HEADER) Installing all dependencies" && \
@@ -48,9 +48,9 @@ lint-fix:
 
 push-all:
 	@echo "${HEADER} Pushing all changed files to ${GIT_BRANCH}" && \
+	$(call should_update_version) && \
 	git add . && \
 	$(PACKAGE_MANAGER) commit && \
-	$(PACKAGE_MANAGER) changeset && \
 	git push origin $(GIT_BRANCH)
 
 start:
