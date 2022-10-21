@@ -15,7 +15,7 @@
     "precommit": "pnpm -r precommit",
     "prepare": "husky install",
     "rebuild": "pnpm -r rebuild",
-    "setup": "pnpm install",
+    "setup": "pnpm install && pnpm prepare",
     "test": "pnpm -r test --stream"
   },
   "devDependencies": {
