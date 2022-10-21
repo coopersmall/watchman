@@ -25,9 +25,8 @@
     "build": "swc src -d dist",
     "clean": "rm -rf dist rm -rf coverage",
     "dev": "pnpm watch:build",
-    "precommit": "pnpm test",
-    "test": "jest --coverage",
-    "watch:build": "swc src -w --out-dir dist"
+    "precommit": "pnpm clean && pnpm test",
+    "test": "jest"
   },
   "devDependencies": {
     "@types/jest": "^29.1.2",
@@ -47,6 +46,15 @@
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/test/setup_after_env.ts"
-    ]
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "<rootDir>/src/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "lines": 85
+      }
+    }
   }
 }
