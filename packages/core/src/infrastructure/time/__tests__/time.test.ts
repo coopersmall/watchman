@@ -21,6 +21,7 @@ describe('getDateFromISOString', () => {
 describe('getDateTimeFromISOString', () => {
   const dateTimeFromISOString = getDateTimeFromISOString(isoString);
   const expectedDateTime = '10/21/2022, 12:00:00 PM';
+
   itReturnsExpectedFormat(dateTimeFromISOString, expectedDateTime);
 });
 

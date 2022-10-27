@@ -1,11 +1,25 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import ClientError from '../errors/client_error';
-import ServerError from '../errors/server_error';
-import TimeoutError from '../errors/timeout_error';
-import { ErrorMeta } from '../errors/error_meta';
+import ClientError from '../../infrastructure/errors/client_error';
+import ServerError from '../../infrastructure/errors/server_error';
+import TimeoutError from '../../infrastructure/errors/timeout_error';
+import { ErrorMeta } from '../../infrastructure/errors/error_meta';
 import { DEFAULT_TIMEOUT_MS } from './constants';
 
-export class HttpClient {
+export default function createHttpClient(timeout: number = DEFAULT_TIMEOUT_MS) {
+  return new HttpClient(timeout);
+}
+
+export interface IHttpClient {
+  getTimeout(): number | undefined;
+  request(request: AxiosRequestConfig): Promise<AxiosResponse<any, any>>;
+  get(url: string, config: AxiosRequestConfig): Promise<AxiosResponse<any, any>>;
+  post<D = any>(url: string, data: D, request: AxiosRequestConfig): Promise<AxiosResponse<any, any>>;
+  patch<D = any>(url: string, data: D, request: AxiosRequestConfig): Promise<AxiosResponse<any, any>>;
+  put<D = any>(url: string, data: D, request: AxiosRequestConfig): Promise<AxiosResponse<any, any>>;
+  delete(url: string, config: AxiosRequestConfig): Promise<AxiosResponse<any, any>>;
+}
+
+class HttpClient implements IHttpClient {
   private instance: AxiosInstance;
 
   constructor(timeout: number = DEFAULT_TIMEOUT_MS) {
@@ -77,9 +91,3 @@ const buildErrorMeta = (error: AxiosError) => {
 
   return errorMeta;
 };
-
-const createHttpClient = (timeout: number = DEFAULT_TIMEOUT_MS) => {
-  return new HttpClient(timeout);
-};
-
-export default createHttpClient;

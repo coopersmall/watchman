@@ -1,9 +1,9 @@
 import nock from 'nock';
-import createHttpClient, { HttpClient } from '../http_client';
+import createHttpClient, { IHttpClient } from '../http_client';
 import { DEFAULT_TIMEOUT_MS } from '../constants';
-import ClientError from '../../errors/client_error';
-import ServerError from '../../errors/server_error';
-import TimeoutError from '../../errors/timeout_error';
+import ClientError from '../../../infrastructure/errors/client_error';
+import ServerError from '../../../infrastructure/errors/server_error';
+import TimeoutError from '../../../infrastructure/errors/timeout_error';
 
 const baseUrl = 'https://www.test.com';
 const uri = '/get-token';
@@ -12,16 +12,7 @@ const headers = {
 };
 
 describe('HttpClient', () => {
-  const httpClient = new HttpClient();
-
-  itCreatesHttpClientAndSetsTimeout(httpClient, DEFAULT_TIMEOUT_MS);
-
-  describe('with custom timeout', () => {
-    const timeout = 10000;
-    const httpClientWithCustomTimeout = new HttpClient(timeout);
-
-    itCreatesHttpClientAndSetsTimeout(httpClientWithCustomTimeout, timeout);
-  });
+  const httpClient = createHttpClient();
 
   describe('request', () => {
     const url = `${baseUrl}${uri}?id=btc`;
@@ -43,15 +34,8 @@ describe('HttpClient', () => {
 
       withRequest(status, responseBody);
 
-      it('returns a response', async () => {
-        const response = await whenInvoked();
-        expect(response).toEqual(responseBody);
-      });
-
-      it('does not return an error', async () => {
-        const response = await whenInvoked();
-        expect(response).not.toBeInstanceOf(Error);
-      });
+      itSucceeds(whenInvoked);
+      itReturnsAResponse(whenInvoked, responseBody);
     });
 
     describe('with 4xx status code', () => {
@@ -98,7 +82,7 @@ describe('HttpClient', () => {
         nock(baseUrl).get(uri).query(query).replyWithError({ code: 'whoops' });
       });
 
-      it('returns a generic error', async () => {
+      it('does not return a client error, server error, or timeout error', async () => {
         const response = await whenInvoked();
         expect(response).not.toBeInstanceOf(ClientError);
         expect(response).not.toBeInstanceOf(ServerError);
@@ -139,15 +123,8 @@ describe('HttpClient', () => {
       nock(baseUrl).get(uri).query(query).reply(status, responseBody);
     });
 
-    it('returns the expected response', async () => {
-      const response = await whenInvoked();
-      expect(response).toEqual(responseBody);
-    });
-
-    it('does not return an error', async () => {
-      const response = await whenInvoked();
-      expect(response).not.toBeInstanceOf(Error);
-    });
+    itSucceeds(whenInvoked);
+    itReturnsAResponse(whenInvoked, responseBody);
 
     async function whenInvoked() {
       try {
@@ -175,15 +152,8 @@ describe('HttpClient', () => {
       nock(baseUrl).post(uri, body).reply(status, responseBody);
     });
 
-    it('returns a response', async () => {
-      const response = await whenInvoked();
-      expect(response).toEqual(responseBody);
-    });
-
-    it('does not return an error', async () => {
-      const response = await whenInvoked();
-      expect(response).not.toBeInstanceOf(Error);
-    });
+    itSucceeds(whenInvoked);
+    itReturnsAResponse(whenInvoked, responseBody);
 
     async function whenInvoked() {
       try {
@@ -211,15 +181,8 @@ describe('HttpClient', () => {
       nock(baseUrl).patch(uri, body).reply(status, responseBody);
     });
 
-    it('returns a response', async () => {
-      const response = await whenInvoked();
-      expect(response).toEqual(responseBody);
-    });
-
-    it('does not return an error', async () => {
-      const response = await whenInvoked();
-      expect(response).not.toBeInstanceOf(Error);
-    });
+    itSucceeds(whenInvoked);
+    itReturnsAResponse(whenInvoked, responseBody);
 
     async function whenInvoked() {
       try {
@@ -247,15 +210,8 @@ describe('HttpClient', () => {
       nock(baseUrl).put(uri, body).reply(status, responseBody);
     });
 
-    it('returns a response', async () => {
-      const response = await whenInvoked();
-      expect(response).toEqual(responseBody);
-    });
-
-    it('does not return an error', async () => {
-      const response = await whenInvoked();
-      expect(response).not.toBeInstanceOf(Error);
-    });
+    itSucceeds(whenInvoked);
+    itReturnsAResponse(whenInvoked, responseBody);
 
     async function whenInvoked() {
       try {
@@ -283,15 +239,8 @@ describe('HttpClient', () => {
       nock(baseUrl).delete(uri).query(query).reply(status, responseBody);
     });
 
-    it('returns a response', async () => {
-      const response = await whenInvoked();
-      expect(response).toEqual(responseBody);
-    });
-
-    it('does not return an error', async () => {
-      const response = await whenInvoked();
-      expect(response).not.toBeInstanceOf(Error);
-    });
+    itSucceeds(whenInvoked);
+    itReturnsAResponse(whenInvoked, responseBody);
 
     async function whenInvoked() {
       try {
@@ -301,28 +250,38 @@ describe('HttpClient', () => {
       }
     }
   });
+
+  function itReturnsAResponse(whenInvoked: Function, expectedResponse: any) {
+    it('returns a response', async () => {
+      const response = await whenInvoked();
+      expect(response).toEqual(expectedResponse);
+    });
+  }
+
+  function itSucceeds(whenInvoked: Function) {
+    it('does not return an error', async () => {
+      const response = await whenInvoked();
+      expect(response).not.toBeInstanceOf(Error);
+    });
+  }
 });
 
 describe('createHttpClient', () => {
   const httpClient = createHttpClient();
 
-  itCreatesHttpClientAndSetsTimeout(httpClient, DEFAULT_TIMEOUT_MS);
+  itSetsTimeout(httpClient, DEFAULT_TIMEOUT_MS);
 
   describe('with custom timeout', () => {
     const timeout = 10000;
     const httpClientWithCustomTimeout = createHttpClient(timeout);
 
-    itCreatesHttpClientAndSetsTimeout(httpClientWithCustomTimeout, timeout);
+    itSetsTimeout(httpClientWithCustomTimeout, timeout);
   });
+
+  function itSetsTimeout(httpClient: IHttpClient, expectedTimeout: number) {
+    it('sets timeout', () => {
+      const timeout = httpClient.getTimeout();
+      expect(timeout).toEqual(expectedTimeout);
+    });
+  }
 });
-
-function itCreatesHttpClientAndSetsTimeout(httpClient: HttpClient, expectedTimeout: number) {
-  it('creates a new http client', () => {
-    expect(httpClient).toBeInstanceOf(HttpClient);
-  });
-
-  it('sets timeout', () => {
-    const timeout = httpClient.getTimeout();
-    expect(timeout).toEqual(expectedTimeout);
-  });
-}
